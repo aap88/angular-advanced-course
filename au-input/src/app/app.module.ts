@@ -6,17 +6,17 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import { AuFaInputComponent } from './lib/au-fa-input/au-fa-input.component';
 import { InputRefDirective } from './lib/common/input-ref.directive';
+import { AuInputModule } from './lib/au-input.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    AuFaInputComponent,
-    InputRefDirective
+    AppComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AuInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
