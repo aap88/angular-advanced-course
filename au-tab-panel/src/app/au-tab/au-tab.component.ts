@@ -9,7 +9,10 @@ export class AuTabComponent implements OnInit {
 
   @Input()
   title: string;
-  
+
+  @Input()
+  selected = false;
+
   constructor() { }
 
   ngOnInit() {
