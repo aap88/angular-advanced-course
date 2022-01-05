@@ -13,7 +13,7 @@ import { AuModalComponent } from './au-modal.component';
   imports: [
     CommonModule
   ],
-  exports: []
+  exports: [AuModalComponent]
 })
 export class AuModalModule {
 

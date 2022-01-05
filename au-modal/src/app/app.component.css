@@ -1,10 +1,13 @@
 
-@import "au-modal/au-modal.component.scss";
 
 .container {
   margin: 0 auto;
   max-width: 300px;
   padding-top:65px;
+}
+
+::ng-deep .auth-modal .modal-body {
+  min-width: 300px;
 }
 
 label {
