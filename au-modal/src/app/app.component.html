@@ -19,7 +19,7 @@
 
     <h1>Modal Examples</h1>
 
-    <au-modal class="auth-modal">
+    <ng-template #authModalBody>
 
       <au-tab-panel>
         <au-tab title="Login">
@@ -57,17 +57,10 @@
         </au-tab>
       </au-tab-panel>
 
+    </ng-template>
+
+    <au-modal class="auth-modal" [body]="authModalBody">
     </au-modal>
-
-    <div class="modal-overlay">
-
-      <div class="modal-body">
-
-
-      </div>
-
-    </div>
-
 
 
 
