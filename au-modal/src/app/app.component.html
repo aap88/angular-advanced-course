@@ -19,10 +19,12 @@
 
     <h1>Modal Examples</h1>
 
-    <ng-template #authModalBody>
+    <ng-template #authModalBody let-title="title" let-loginTabActive="loginTabActive">
+
+      <h5>{{title}}</h5>
 
       <au-tab-panel>
-        <au-tab title="Login">
+        <au-tab title="Login" [selected]="loginTabActive">
           <form>
             <div class="form-field">
               <au-fa-input id="email-field" icon="envelope">
@@ -36,7 +38,7 @@
             </div>
           </form>
         </au-tab>
-        <au-tab title="Sign Up">
+        <au-tab title="Sign Up" [selected]="!loginTabActive">
           <form>
             <div class="form-field">
               <au-fa-input icon="envelope">
@@ -63,6 +65,7 @@
       #modal
       [hideOnClickOutside]="true"
       [hideOnEsc]="true" class="auth-modal" [body]="authModalBody"
+      [context]="{title: 'Login or Sign Up', loginTabActive: loginActive}"
       *auModalOpenOnClick="[loginButton, signUpButton]">
 
       <i class="fa fa-times" (click)="modal.close()"></i>
@@ -75,9 +78,9 @@
 
     <div class="modal-buttons">
 
-      <button #loginButton>Login</button>
+      <button #loginButton (click)="setLoginActive(true)">Login</button>
 
-      <button #signUpButton>Sign Up</button>
+      <button #signUpButton (click)="setLoginActive(false)">Sign Up</button>
 
     </div>
 
