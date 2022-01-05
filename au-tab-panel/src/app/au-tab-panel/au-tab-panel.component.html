@@ -9,6 +9,6 @@
 
 </ng-template>
 
-<ng-container *ngTemplateOutlet="defaultTabsHeader; context:tabsContext"></ng-container>
+<ng-container *ngTemplateOutlet="headerTemplate ? headerTemplate : defaultTabsHeader; context:tabsContext"></ng-container>
 
   <ng-content></ng-content>
