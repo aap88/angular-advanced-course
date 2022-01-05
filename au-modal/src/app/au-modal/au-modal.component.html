@@ -2,6 +2,10 @@
 
     <div class="modal-body" (click)="cancelClick($event)">
 
+        <div class="close-icon">
+            <ng-content select="i"></ng-content>
+        </div>
+
         <ng-container *ngIf="body else projectContent">
             <ng-container *ngTemplateOutlet="body"></ng-container>
         </ng-container>
