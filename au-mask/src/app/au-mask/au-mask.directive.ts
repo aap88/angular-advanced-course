@@ -1,6 +1,7 @@
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import * as includes from 'lodash.includes';
-import { overWriteCharAtPosition, SPECIAL_CHARACTERS, TAB } from './mask.utils';
+import * as findLastIndex from 'lodash.findlastindex';
+import { LEFT_ARROW, overWriteCharAtPosition, RIGHT_ARROW, SPECIAL_CHARACTERS, TAB } from './mask.utils';
 
 @Directive({
   selector: '[au-mask]'
@@ -32,8 +33,43 @@ export class AuMaskDirective implements OnInit {
     const key = String.fromCharCode(keyCode);
     const cursorPos = this.input.selectionStart;
 
-    overWriteCharAtPosition(this.input, cursorPos, key);
+    switch(keyCode) {
 
+      case LEFT_ARROW:
+        this.handleLeftError(cursorPos);
+
+        return;
+      
+      case RIGHT_ARROW:
+        this.handleRightError(cursorPos);
+
+        return;
+    }
+
+    overWriteCharAtPosition(this.input, cursorPos, key);
+    this.handleRightError(cursorPos);
+
+  }
+
+  handleLeftError(cursorPos) {
+    const valueBeforeCursor = this.input.value.slice(0, cursorPos);
+    const previousPos = 
+      findLastIndex(valueBeforeCursor, char => ! includes(SPECIAL_CHARACTERS, char));
+
+    if (previousPos >= 0) {
+      this.input.setSelectionRange(previousPos, previousPos);
+    }
+  }
+
+  handleRightError(cursorPos) {
+    const valueAfterCursor = this.input.value.slice(cursorPos + 1);
+    const nextPos = 
+      findLastIndex(valueAfterCursor, char => ! includes(SPECIAL_CHARACTERS, char));
+
+    if (nextPos >= 0) {
+      const newCursorPos = cursorPos + nextPos + 1;
+      this.input.setSelectionRange(newCursorPos, newCursorPos);
+    }
   }
 
   buildPlaceHolder(): string {
