@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import * as includes from 'lodash.includes';
-import { SPECIAL_CHARACTERS, TAB } from './mask.utils';
+import { overWriteCharAtPosition, SPECIAL_CHARACTERS, TAB } from './mask.utils';
 
 @Directive({
   selector: '[au-mask]'
@@ -28,6 +28,11 @@ export class AuMaskDirective implements OnInit {
     if (keyCode !== TAB) {
       $event.preventDefault();
     }
+
+    const key = String.fromCharCode(keyCode);
+    const cursorPos = this.input.selectionStart;
+
+    overWriteCharAtPosition(this.input, cursorPos, key);
 
   }
 
