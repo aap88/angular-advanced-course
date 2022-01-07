@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import * as includes from 'lodash.includes';
 import * as findLastIndex from 'lodash.findlastindex';
-import { LEFT_ARROW, overWriteCharAtPosition, RIGHT_ARROW, SPECIAL_CHARACTERS, TAB } from './mask.utils';
+import { BACKSPACE, DELETE, LEFT_ARROW, overWriteCharAtPosition, RIGHT_ARROW, SPECIAL_CHARACTERS, TAB } from './mask.utils';
 import { maskDigitValidators, neverValidator } from './digit_validators';
 
 @Directive({
@@ -37,12 +37,22 @@ export class AuMaskDirective implements OnInit {
     switch(keyCode) {
 
       case LEFT_ARROW:
-        this.handleLeftError(cursorPos);
+        this.handleLeftArrow(cursorPos);
 
         return;
       
       case RIGHT_ARROW:
-        this.handleRightError(cursorPos);
+        this.handleRightArrow(cursorPos);
+
+        return;
+
+      case BACKSPACE:
+        this.handleBackspace(cursorPos);
+
+        return;
+
+      case DELETE:
+        this.handleDelete(cursorPos);
 
         return;
     }
@@ -52,22 +62,38 @@ export class AuMaskDirective implements OnInit {
 
     if (digitValidator(key)) {
       overWriteCharAtPosition(this.input, cursorPos, key);
-      this.handleRightError(cursorPos);
+      this.handleRightArrow(cursorPos);
     }
 
   }
 
-  handleLeftError(cursorPos) {
-    const valueBeforeCursor = this.input.value.slice(0, cursorPos);
-    const previousPos = 
-      findLastIndex(valueBeforeCursor, char => ! includes(SPECIAL_CHARACTERS, char));
+  handleBackspace(cursorPos) {
+    const previousPos = this.calculatePreviousCursorPosition(cursorPos);
 
     if (previousPos >= 0) {
       this.input.setSelectionRange(previousPos, previousPos);
     }
   }
 
-  handleRightError(cursorPos) {
+  handleDelete(cursorPos) {
+    overWriteCharAtPosition(this.input, cursorPos, '_');
+    this.input.setSelectionRange(cursorPos, cursorPos);
+  }
+
+  handleLeftArrow(cursorPos) {
+    const previousPos = this.calculatePreviousCursorPosition(cursorPos);
+
+    if (previousPos >= 0) {
+      this.input.setSelectionRange(previousPos, previousPos);
+    }
+  }
+
+  calculatePreviousCursorPosition(cursorPos) {
+    const valueBeforeCursor = this.input.value.slice(0, cursorPos);
+    return findLastIndex(valueBeforeCursor, char => ! includes(SPECIAL_CHARACTERS, char));
+  }
+
+  handleRightArrow(cursorPos) {
     const valueAfterCursor = this.input.value.slice(cursorPos + 1);
     const nextPos = 
       findLastIndex(valueAfterCursor, char => ! includes(SPECIAL_CHARACTERS, char));
