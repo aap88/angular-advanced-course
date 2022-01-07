@@ -1,6 +1,7 @@
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import * as includes from 'lodash.includes';
 import * as findLastIndex from 'lodash.findlastindex';
+import * as findIndex from 'lodash.findindex';
 import { BACKSPACE, DELETE, LEFT_ARROW, overWriteCharAtPosition, RIGHT_ARROW, SPECIAL_CHARACTERS, TAB } from './mask.utils';
 import { maskDigitValidators, neverValidator } from './digit_validators';
 
@@ -14,6 +15,8 @@ export class AuMaskDirective implements OnInit {
 
   input: HTMLInputElement;
 
+  fullFieldSeleted = false;
+
   constructor(el: ElementRef) {
 
     this.input = el.nativeElement;
@@ -24,15 +27,35 @@ export class AuMaskDirective implements OnInit {
     this.input.value = this.buildPlaceHolder();
   }
 
+  @HostListener('select', ['$event'])
+  onSelect($event: UIEvent) {
+
+    this.fullFieldSeleted = this.input.selectionStart == 0 &&
+      this.input.selectionEnd === this.input.value.length;
+  }
+
   @HostListener("keydown", ['$event', '$event.keyCode'])
   onKeyDown($event: KeyboardEvent, keyCode) {
 
+    if ($event.metaKey || $event.ctrlKey) {
+      return;
+    }
+    
     if (keyCode !== TAB) {
       $event.preventDefault();
     }
 
     const key = String.fromCharCode(keyCode);
     const cursorPos = this.input.selectionStart;
+
+    if (this.fullFieldSeleted) {
+      this.input.value = this.buildPlaceHolder();
+
+      const firstPlaceholderPos = findIndex(this.input.value,
+        char => char === '_');
+
+      this.input.setSelectionRange(firstPlaceholderPos, firstPlaceholderPos);
+    }
 
     switch(keyCode) {
 
